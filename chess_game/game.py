@@ -69,20 +69,41 @@ class ChessGame():
         """
         Process a move
 
+        # TODO: stuff for en passent
+        # TODO: case handling for multiple pieces that can go to a square
+
         :param move: move in chess notation
         :return: 0 if move is valid, else -1
         """
         if move == 'O-O-O' or move == 'O-O':
             # TODO: stuff for castling
-            pass
+            return
 
+        # find destination square
         dst = move[-2:]
         dst_file = self._letter_to_file[dst[0]]  # convert letters to indices
         dst_rank = int(dst[1]) - 1               # chess notation is 1-indexed
+        dst = (dst_rank, dst_file)
 
-        # TODO: stuff for en passent
+        # find piece making the move
+        piece_to_move = 'P'
+        if move[0].isupper():
+            piece_to_move = move[0]
 
-        # TODO: case handling for multiple pieces that can go to a square
+        # go through pieces of the color whose turn it is to move and see if
+        # any of them can make the move
+        for piece in self.pieces[self.turn][piece_to_move]:
+
+            # success! move the piece
+            if dst in piece.get_possible_moves(self.board):
+                self.board[dst[0]][dst[1]] = self.board[piece.get_rank()][piece.get_file()]
+                self.board[piece.get_rank()][piece.get_file()] = None
+
+                self.turn ^= 1
+                return 0
+
+        # if the code gets here it means that this move is invalid
+        return -1
 
     def possible_moves(self, piece, board):
         """
@@ -143,9 +164,17 @@ class ChessGame():
 
         print('---------------------------------')
 
+        if self.turn == 0:
+            print('White to move')
+        else:
+            print('Black to move')
+
 
 if __name__ == '__main__':
     game = ChessGame()
     game.new_game()
 
+    game.display_board()
+    game.move('Nc3')
+    game.move('Nf6')
     game.display_board()

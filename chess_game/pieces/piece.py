@@ -20,6 +20,9 @@ class Piece():
         """
         Return all possible squares to move to in (rank, file) form given the
         current board
+
+        :param board: current board (see game.py)
+        :return: list of (rank, file) tuples
         """
         pass
 
@@ -48,5 +51,8 @@ class Piece():
     def set_rank(self, rank):
         self.rank = rank
 
-    def get_file(self, file):
+    def get_file(self):
+        return self.file
+
+    def set_file(self, file):
         self.file = file
