@@ -1,5 +1,6 @@
 from pieces.piece import Piece
 
+
 class Knight(Piece):
 
     def __init__(self, color, rank, file):
@@ -30,7 +31,7 @@ class Knight(Piece):
         for move in possible_move_candidates:
             if 0 <= move[0] <= 7 and 0 <= move[1] <= 7:
                 if board[move[0]][move[1]] is None or \
-                    board[move[0]][move[1]].get_color() != self.color:
+                        board[move[0]][move[1]].get_color() != self.color:
                     possible_moves.append(move)
 
         return possible_moves

@@ -1,7 +1,7 @@
 from pieces import *
 
 
-class ChessGame():
+class ChessGame:
 
     def __init__(self):
         """
@@ -46,7 +46,7 @@ class ChessGame():
         # white to move
         self.turn = 0
 
-    def display_board(self, type='print'):
+    def display_board(self, display_type='print'):
         """
         Display current board state
 
@@ -57,7 +57,7 @@ class ChessGame():
             return
 
         # print board
-        if type == 'print':
+        if display_type == 'print':
             self._print_board()
             return
 
@@ -109,7 +109,6 @@ class ChessGame():
         """
         Lists all possible moves given a piece and a board
         """
-
 
     #
     #   Private helper methods

@@ -1,5 +1,6 @@
 from pieces.piece import Piece
 
+
 class Pawn(Piece):
 
     def __init__(self, color, rank, file):
@@ -32,7 +33,7 @@ class Pawn(Piece):
             # check for captures
             for incr in [-1, 1]:
                 if 0 <= self.file + incr <= 7 and \
-                    board[self.rank + 1][self.file + incr] is not None:
+                        board[self.rank + 1][self.file + incr] is not None:
 
                     if board[self.rank + 1][self.file + incr].get_color() == 1:
                         possible_moves.append((self.rank + 1, self.file + incr))
@@ -54,7 +55,7 @@ class Pawn(Piece):
             # check for captures
             for incr in [-1, 1]:
                 if 0 <= self.file + incr <= 7 and \
-                    board[self.rank - 1][self.file + incr] is not None:
+                        board[self.rank - 1][self.file + incr] is not None:
 
                     if board[self.rank - 1][self.file + incr].get_color() == 0:
                         possible_moves.append((self.rank - 1, self.file + incr))

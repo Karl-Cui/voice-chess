@@ -1,4 +1,4 @@
-class Piece():
+class Piece:
 
     def __init__(self, piece, color, rank, file):
         """
