@@ -16,11 +16,18 @@ class Piece():
         self.rank = rank
         self.file = file
 
+    def get_possible_moves(self, board):
+        """
+        Return all possible squares to move to in (rank, file) form given the
+        current board
+        """
+        pass
+
     #
     #   Getters and setters
     #
 
-    def get_piece(self, case=True):
+    def get_piece(self, case=False):
         """
         Get current piece (P, N, B, R, Q, K).
 

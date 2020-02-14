@@ -1,4 +1,4 @@
-from piece import Piece
+from pieces import *
 
 
 class ChessGame():
@@ -11,6 +11,7 @@ class ChessGame():
         self.turn = None        # 0 for white, 1 for black
 
         self.pieces = [{}, {}]  # first dict for white pieces, second for black
+        self._letter_to_file = {ch: i for i, ch in enumerate('abcdefgh')}
 
     def new_game(self):
         """
@@ -20,24 +21,24 @@ class ChessGame():
 
         # set up pieces
         for rank in [0, 7]:
-            self.board[rank][0] = Piece('R', color=rank % 2, rank=rank, file=0)
-            self.board[rank][1] = Piece('N', color=rank % 2, rank=rank, file=1)
-            self.board[rank][2] = Piece('B', color=rank % 2, rank=rank, file=2)
+            self.board[rank][0] = Rook(color=rank % 2, rank=rank, file=0)
+            self.board[rank][1] = Knight(color=rank % 2, rank=rank, file=1)
+            self.board[rank][2] = Bishop(color=rank % 2, rank=rank, file=2)
 
-            self.board[rank][5] = Piece('B', color=rank % 2, rank=rank, file=5)
-            self.board[rank][6] = Piece('N', color=rank % 2, rank=rank, file=6)
-            self.board[rank][7] = Piece('R', color=rank % 2, rank=rank, file=7)
+            self.board[rank][5] = Bishop(color=rank % 2, rank=rank, file=5)
+            self.board[rank][6] = Knight(color=rank % 2, rank=rank, file=6)
+            self.board[rank][7] = Rook(color=rank % 2, rank=rank, file=7)
 
         # set up king and queens
-        self.board[0][3] = Piece('Q', color=0, rank=0, file=3)
-        self.board[0][4] = Piece('K', color=0, rank=0, file=4)
-        self.board[7][3] = Piece('K', color=1, rank=7, file=3)
-        self.board[7][4] = Piece('Q', color=1, rank=7, file=4)
+        self.board[0][3] = Queen(color=0, rank=0, file=3)
+        self.board[0][4] = King(color=0, rank=0, file=4)
+        self.board[7][3] = King(color=1, rank=7, file=3)
+        self.board[7][4] = Queen(color=1, rank=7, file=4)
 
         # set up pawns
         for file in range(8):
-            self.board[1][file] = Piece('P', color=0, rank=1, file=file)
-            self.board[6][file] = Piece('P', color=1, rank=6, file=file)
+            self.board[1][file] = Pawn(color=0, rank=1, file=file)
+            self.board[6][file] = Pawn(color=1, rank=6, file=file)
 
         # gather all pieces
         self._update_pieces()
@@ -63,6 +64,30 @@ class ChessGame():
     #
     #   Move handling
     #
+
+    def move(self, move):
+        """
+        Process a move
+
+        :param move: move in chess notation
+        :return: 0 if move is valid, else -1
+        """
+        if move == 'O-O-O' or move == 'O-O':
+            # TODO: stuff for castling
+            pass
+
+        dst = move[-2:]
+        dst_file = self._letter_to_file[dst[0]]  # convert letters to indices
+        dst_rank = int(dst[1]) - 1               # chess notation is 1-indexed
+
+        # TODO: stuff for en passent
+
+        # TODO: case handling for multiple pieces that can go to a square
+
+    def possible_moves(self, piece, board):
+        """
+        Lists all possible moves given a piece and a board
+        """
 
 
     #
@@ -108,7 +133,7 @@ class ChessGame():
 
                 # determine whether to display a piece or a blank square
                 if piece is not None:
-                    piece = piece.get_piece()
+                    piece = piece.get_piece(case=True)
                 else:
                     piece = ' '
 
