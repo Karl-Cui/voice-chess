@@ -65,7 +65,7 @@ class ChessGame:
     #   Move handling
     #
 
-    def move(self, move):
+    def exec_move(self, move):
         """
         Process a move
 
@@ -79,13 +79,14 @@ class ChessGame:
         if ' ' in move:
             success = 0
             for m in move.split(' '):
-                success = min(success, self.move(m))
+                success = min(success, self.exec_move(m))
             return success
 
         # handle castling
-        if move == 'O-O-O' or move == 'O-O':
-            # TODO: stuff for castling
-            return
+        if move == 'O-O-O':
+            return self.castle(short=False)
+        elif move == 'O-O':
+            return self.castle(short=True)
 
         # find destination square
         dst = move[-2:]
@@ -104,16 +105,72 @@ class ChessGame:
 
             # success! move the piece
             if dst in piece.get_possible_moves(self.board):
-                self.board[dst[0]][dst[1]] = self.board[piece.get_rank()][piece.get_file()]     # move piece to new pos
-                self.board[piece.get_rank()][piece.get_file()] = None                           # delete old piece
-
-                self.board[dst[0]][dst[1]].set_rank(dst[0])                                     # set new rank
-                self.board[dst[0]][dst[1]].set_file(dst[1])                                     # set new file
+                self.move(
+                    src=(piece.get_rank(), piece.get_file()),
+                    dst=dst
+                )
 
                 self.turn ^= 1
                 return 0
 
         # if the code gets here it means that this move is invalid
+        return -1
+
+    def move(self, src, dst):
+        """
+        Move piece from src to dst
+
+        :param src: (rank, file) tuple
+        :param dst: (rank, file) tuple
+        :return: 0 if success, else -1
+        """
+        self.board[dst[0]][dst[1]] = self.board[src[0]][src[1]]  # move piece to new pos
+        self.board[src[0]][src[1]] = None                        # delete old piece
+
+        self.board[dst[0]][dst[1]].set_rank(dst[0])  # set new rank
+        self.board[dst[0]][dst[1]].set_file(dst[1])  # set new file
+        self.board[dst[0]][dst[1]].set_moved()       # piece has moved before
+
+    def castle(self, short):
+        """
+        Castle kingside or queenside
+
+        :param short: if True castle short, else castle long
+        :return: 0 if move is valid, else -1
+        """
+        # check that king hasn't moved yet
+        if self.pieces[self.turn]['K'][0].get_moved():
+            return -1
+
+        # rank to castle on
+        if self.turn == 0:
+            c_rank = 0
+        else:
+            c_rank = 1
+
+        # castle short
+        if short:
+
+            for i in range(5, 7):
+                if self.board[c_rank][i] is not None:
+                    return -1
+            if self.board[c_rank][7] is not None and not self.board[c_rank][7].get_moved():
+                self.move(src=(c_rank, 4), dst=(c_rank, 6))
+                self.move(src=(c_rank, 7), dst=(c_rank, 5))
+                return 0
+
+        # castle long
+        else:
+
+            # white castles queenside
+            for i in range(1, 4):
+                if self.board[c_rank][i] is not None:
+                    return -1
+            if self.board[c_rank][0] is not None and not self.board[c_rank][0].get_moved():
+                self.move(src=(c_rank, 4), dst=(c_rank, 2))
+                self.move(src=(c_rank, 0), dst=(c_rank, 3))
+                return 0
+
         return -1
 
     #
@@ -179,5 +236,5 @@ if __name__ == '__main__':
     game = ChessGame()
     game.new_game()
 
-    game.move('d4 d5 c4 c6 Nc3 Nf6 Bg5 Rg8 Bxf6 gxf6')
+    game.exec_move('e4 e5 Nf3 Nf6 Bc4 d6 O-O')
     game.display_board()

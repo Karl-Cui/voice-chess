@@ -16,6 +16,8 @@ class Piece:
         self.rank = rank
         self.file = file
 
+        self.moved = False
+
     def get_possible_moves(self, board):
         """
         Return all possible squares to move to in (rank, file) form given the
@@ -86,3 +88,9 @@ class Piece:
 
     def set_file(self, file):
         self.file = file
+
+    def get_moved(self):
+        return self.moved
+
+    def set_moved(self):
+        self.moved = True
