@@ -75,6 +75,14 @@ class ChessGame:
         :param move: move in chess notation
         :return: 0 if move is valid, else -1
         """
+        # if multiple moves are given, move each move individually
+        if ' ' in move:
+            success = 0
+            for m in move.split(' '):
+                success = min(success, self.move(m))
+            return success
+
+        # handle castling
         if move == 'O-O-O' or move == 'O-O':
             # TODO: stuff for castling
             return
@@ -96,19 +104,17 @@ class ChessGame:
 
             # success! move the piece
             if dst in piece.get_possible_moves(self.board):
-                self.board[dst[0]][dst[1]] = self.board[piece.get_rank()][piece.get_file()]
-                self.board[piece.get_rank()][piece.get_file()] = None
+                self.board[dst[0]][dst[1]] = self.board[piece.get_rank()][piece.get_file()]     # move piece to new pos
+                self.board[piece.get_rank()][piece.get_file()] = None                           # delete old piece
+
+                self.board[dst[0]][dst[1]].set_rank(dst[0])                                     # set new rank
+                self.board[dst[0]][dst[1]].set_file(dst[1])                                     # set new file
 
                 self.turn ^= 1
                 return 0
 
         # if the code gets here it means that this move is invalid
         return -1
-
-    def possible_moves(self, piece, board):
-        """
-        Lists all possible moves given a piece and a board
-        """
 
     #
     #   Private helper methods
@@ -173,7 +179,5 @@ if __name__ == '__main__':
     game = ChessGame()
     game.new_game()
 
-    game.display_board()
-    game.move('Nc3')
-    game.move('Nf6')
+    game.move('d4 d5 c4 c6 Nc3 Nf6 Bg5 Rg8 Bxf6 gxf6')
     game.display_board()

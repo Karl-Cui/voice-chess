@@ -24,7 +24,37 @@ class Piece:
         :param board: current board (see game.py)
         :return: list of (rank, file) tuples
         """
-        pass
+        pass    # to be implemented by each individual class
+
+    def _get_possible_moves_in_dir(self, board, rank_incr, file_incr):
+        """
+        Get all possible moves in a certain direction
+
+        :param board: current board (see game.py
+        :param rank_incr: how much to increment rank every step (-1, 0, 1)
+        :param file_incr: how much to increment file every step (-1, 0, 1)
+        :return: list of (rank, file) tuples
+        """
+        possible_moves = []
+
+        new_rank = self.rank + rank_incr
+        new_file = self.file + file_incr
+
+        # keep incrementing / decrementing rank and file until we encounter the
+        # edge of the board or another piece
+        while 0 <= new_rank <= 7 and 0 <= new_file <= 7:
+
+            if board[new_rank][new_file] is None:
+                possible_moves.append((new_rank, new_file))
+            else:
+                if board[new_rank][new_file].get_color() != self.color:
+                    possible_moves.append((new_rank, new_file))
+                break
+
+            new_rank += rank_incr
+            new_file += file_incr
+
+        return possible_moves
 
     #
     #   Getters and setters
