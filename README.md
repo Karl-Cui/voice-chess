@@ -1,2 +1,1 @@
-# voice-chess
-Voice controlled chess
+# Voice controlled chess
